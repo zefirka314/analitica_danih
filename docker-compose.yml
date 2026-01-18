@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: game_stats_db
+      POSTGRES_USER: game_user
+      POSTGRES_PASSWORD: game_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - analytics_net
+
+  redash:
+    image: redash/redash:latest
+    ports:
+      - "5000:5000"
+    environment:
+      REDASH_DATABASE_URL: postgresql://postgres:postgres@postgres/postgres
+      REDASH_REDIS_URL: redis://redis:6379/0
+      REDASH_COOKIE_SECRET: very_secret_key_123
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - analytics_net
+
+  redis:
+    image: redis:6-alpine
+    networks:
+      - analytics_net
+
+  data-generator:
+    build: ./data_generator
+    environment:
+      DB_HOST: postgres
+      DB_NAME: game_stats_db
+      DB_USER: game_user
+      DB_PASSWORD: game_pass
+    depends_on:
+      - postgres
+    networks:
+      - analytics_net
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  analytics_net:
+    driver: bridge

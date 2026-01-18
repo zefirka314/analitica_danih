@@ -10,5 +10,4 @@ RUN apt-get update && apt-get install -y \
 RUN pip install psycopg2-binary
 
 COPY generator.py .
-
 CMD ["python", "generator.py"]
