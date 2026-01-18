@@ -1,0 +1,36 @@
+# Секреты
+.env
+*.secret
+*.key
+
+# Базы данных
+*.db
+pgdata/
+postgres_data/
+*.dump
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+venv/
+env/
+.venv/
+
+# Docker
+docker-compose.override.yml
+
+# Логи
+*.log
+logs/
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
